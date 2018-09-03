@@ -12,6 +12,7 @@ ng_module(
     module_name = "@nguniversal/express-engine",
     deps = [
         "//modules/express-engine/tokens",
+        "//modules/common",
     ],
 )
 

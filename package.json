@@ -93,6 +93,7 @@
     "@types/hapi": "^17.0.12",
     "@types/jasmine": "^2.8.6",
     "@types/node": "^9.4.6",
+    "browser-capabilities": "^1.1.2",
     "camelcase": "^4.1.0",
     "express": "^4.15.2",
     "fs-extra": "^3.0.1",

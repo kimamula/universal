@@ -40,6 +40,7 @@ GLOBALS = {
       "@angular/platform-browser": "ng.platformBrowser",
       "@angular/platform-server": "ng.platformServer",
       "@angular/platform-browser-dynamic": "ng.platformBrowserDynamic",
+      "@nguniversal/common": "nguniversal.common",
       "@nguniversal/aspnetcore-engine/tokens": "nguniversal.aspnetcoreEngine.tokens",
       "@nguniversal/express-engine/tokens": "nguniversal.expressEngine.tokens",
       "@nguniversal/hapi-engine/tokens": "nguniversal.hapiEngine.tokens",

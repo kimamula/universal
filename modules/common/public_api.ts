@@ -7,4 +7,5 @@
  */
 export { TransferHttpCacheModule } from './src/transfer_http';
 export { StateTransferInitializerModule } from './src/state-transfer-initializer/module';
+export { LinkPreloadHeadersSetter, PushConfig } from './src/link_preload_headers';
 export * from './private_api';

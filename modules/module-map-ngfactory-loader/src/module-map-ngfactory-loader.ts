@@ -12,9 +12,11 @@ import {
   NgModuleFactory,
   Inject,
   Type,
-  Compiler
+  Compiler,
+  Optional
 } from '@angular/core';
 import {ModuleMap} from './module-map';
+import {LinkPreloadHeadersSetter} from '@nguniversal/common';
 
 /**
  * Token used by the ModuleMapNgFactoryLoader to load modules
@@ -26,7 +28,11 @@ export const MODULE_MAP: InjectionToken<ModuleMap> = new InjectionToken('MODULE_
  */
 @Injectable()
 export class ModuleMapNgFactoryLoader implements NgModuleFactoryLoader {
-  constructor(private compiler: Compiler, @Inject(MODULE_MAP) private moduleMap: ModuleMap) { }
+  constructor(
+    private compiler: Compiler,
+    @Inject(MODULE_MAP) private moduleMap: ModuleMap,
+    @Optional() private linkPreloadHeadersSetter: LinkPreloadHeadersSetter
+  ) { }
 
   load(loadChildrenString: string): Promise<NgModuleFactory<any>> {
     const offlineMode = this.compiler instanceof Compiler;
@@ -34,6 +40,14 @@ export class ModuleMapNgFactoryLoader implements NgModuleFactoryLoader {
 
     if (!type) {
       throw new Error(`${loadChildrenString} did not exist in the MODULE_MAP`);
+    }
+
+    if (this.linkPreloadHeadersSetter) {
+      const hashIndex = loadChildrenString.indexOf('#');
+      this.linkPreloadHeadersSetter.onLoad(hashIndex < 0
+        ? loadChildrenString
+        : loadChildrenString.substr(0, hashIndex)
+      );
     }
 
     return offlineMode ?

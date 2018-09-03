@@ -10,7 +10,9 @@ ng_module(
         "src/**/*.ts",
     ]),
     module_name = "@nguniversal/module-map-ngfactory-loader",
-    deps = [],
+    deps = [
+        "//modules/common",
+    ],
 )
 
 ng_package(

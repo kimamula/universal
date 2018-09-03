@@ -18,6 +18,7 @@ import {
 
 import { FileLoader } from './file-loader';
 import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
+import { LinkPreloadHeadersSetter, PushConfig } from '@nguniversal/common';
 
 /**
  * These are the allowed options for the engine
@@ -25,6 +26,7 @@ import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 export interface NgSetupOptions {
   bootstrap: Type<{}> | NgModuleFactory<{}>;
   providers?: StaticProvider[];
+  pushConfig?: PushConfig;
 }
 
 /**
@@ -89,6 +91,22 @@ export function ngExpressEngine(setupOptions: NgSetupOptions) {
           }
         ]);
 
+      let linkPreloadHeadersSetter: LinkPreloadHeadersSetter;
+      if (setupOptions.pushConfig) {
+        try {
+          const { browserCapabilities } = require('browser-capabilities');
+          const capabilities = browserCapabilities(options.req.headers['user-agent'] as string);
+          linkPreloadHeadersSetter
+            = new LinkPreloadHeadersSetter(setupOptions.pushConfig, capabilities.has('push'));
+          extraProviders.push({
+            provide: LinkPreloadHeadersSetter,
+            useValue: linkPreloadHeadersSetter
+          });
+        } catch (e) {
+          console.warn('You have to add browser-capabilities into your dependencies to make HTTP/2 Server Push work', e);
+        }
+      }
+
       getFactory(moduleOrFactory, compiler)
         .then(factory => {
           return renderModuleFactory(factory, {
@@ -96,6 +114,9 @@ export function ngExpressEngine(setupOptions: NgSetupOptions) {
           });
         })
         .then((html: string) => {
+          if (linkPreloadHeadersSetter) {
+            options.req.res!.set('Link', linkPreloadHeadersSetter.getHeaders());
+          }
           callback(null, html);
         }, (err) => {
           callback(err);

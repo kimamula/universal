@@ -14,6 +14,9 @@
     "@angular/core": "NG_VERSION",
     "@angular/platform-server": "NG_VERSION"
   },
+  "dependencies": {
+    "@nguniversal/common": "0.0.0-PLACEHOLDER"
+  },
   "ng-update": {
     "packageGroup": "NG_UPDATE_PACKAGE_GROUP"
   },
